@@ -469,37 +469,64 @@ export default function BookingPage() {
           margin-bottom: 1.5rem;
         }
 
-        /* Slots Loading */
-        .slots-loading {
+        /* Slots Grid */
+        .slots-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 0.5rem;
+        }
+
+        @media (min-width: 640px) {
+          .slots-grid {
+            grid-template-columns: repeat(4, 1fr);
+          }
+        }
+
+        .slot-button {
+          padding: 0.625rem 0.75rem;
+          border-radius: 0.75rem;
+          font-size: 0.875rem;
+          font-weight: 500;
+          border: 2px solid #e2e8f0;
+          background: white;
+          color: #334155;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          text-align: center;
+        }
+
+        .slot-button:hover:not(.slot-disabled) {
+          border-color: #667eea;
+          color: #667eea;
+          transform: translateY(-1px);
+        }
+
+        .slot-disabled {
+          background: #f8fafc;
+          color: #94a3b8;
+          border-color: #f1f5f9;
+          cursor: not-allowed;
+          text-decoration: line-through;
+        }
+
+        .slot-selected {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+          border-color: #667eea;
+          box-shadow: 0 4px 12px -2px rgba(102, 126, 234, 0.3);
+        }
+
+        .slot-available {
+          background: white;
+          color: #334155;
+          border-color: #e2e8f0;
+        }
+
+        .no-slots-text {
+          color: #94a3b8;
+          font-size: 0.875rem;
           text-align: center;
           padding: 2rem;
-        }
-
-        .dots-loading {
-          display: flex;
-          justify-content: center;
-          gap: 0.5rem;
-          margin-bottom: 0.5rem;
-        }
-
-        .dots-loading span {
-          width: 8px;
-          height: 8px;
-          background: #667eea;
-          border-radius: 50%;
-          animation: bounce 1.4s infinite ease-in-out both;
-        }
-
-        .dots-loading span:nth-child(1) { animation-delay: -0.32s; }
-        .dots-loading span:nth-child(2) { animation-delay: -0.16s; }
-
-        @keyframes bounce {
-          0%, 80%, 100% {
-            transform: scale(0);
-          }
-          40% {
-            transform: scale(1);
-          }
         }
 
         /* Step Actions */
