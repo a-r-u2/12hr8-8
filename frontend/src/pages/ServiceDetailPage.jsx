@@ -17,6 +17,60 @@ export default function ServiceDetailPage() {
       .finally(() => setLoading(false))
   }, [id])
 
+  // Function to get high-quality images based on service category
+  const getServiceImages = (service) => {
+    const imageMap = {
+      salon: {
+        main: 'https://images.unsplash.com/photo-1560066984-138dadb4c035',
+        gallery: [
+          'https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1',
+          'https://images.unsplash.com/photo-1522338140262-f46f5913618a',
+          'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e'
+        ]
+      },
+      cleaning: {
+        main: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952',
+        gallery: [
+          'https://images.unsplash.com/photo-1527515637462-cff94eecc1ac',
+          'https://images.unsplash.com/photo-1563453392212-326f5e854473',
+          'https://images.unsplash.com/photo-1584622650111-993a426fbf0a'
+        ]
+      },
+      repair: {
+        main: 'https://images.unsplash.com/photo-1621905251189-08b45d6a26c7',
+        gallery: [
+          'https://images.unsplash.com/photo-1581091226033-d5c48150dbaa',
+          'https://images.unsplash.com/photo-1581092160607-ee22621dd758',
+          'https://images.unsplash.com/photo-1621905252507-b35492cc74b4'
+        ]
+      },
+      plumbing: {
+        main: 'https://images.unsplash.com/photo-1607472586893-edb57bdc0e39',
+        gallery: [
+          'https://images.unsplash.com/photo-1584622650111-993a426fbf0a',
+          'https://images.unsplash.com/photo-1585704032915-c3400ca202e7',
+          'https://images.unsplash.com/photo-1584622650111-993a426fbf0a'
+        ]
+      },
+      electrical: {
+        main: 'https://images.unsplash.com/photo-1629432149725-0a7c9c32b4fa',
+        gallery: [
+          'https://images.unsplash.com/photo-1621905252507-b35492cc74b4',
+          'https://images.unsplash.com/photo-1629432149725-0a7c9c32b4fa',
+          'https://images.unsplash.com/photo-1621905251189-08b45d6a26c7'
+        ]
+      }
+    }
+
+    const images = imageMap[service.category] || imageMap.cleaning
+    return [
+      service.imageUrl || `${images.main}?w=800&h=500&fit=crop`,
+      `${images.gallery[0]}?w=800&h=500&fit=crop`,
+      `${images.gallery[1]}?w=800&h=500&fit=crop`,
+      `${images.gallery[2]}?w=800&h=500&fit=crop`
+    ]
+  }
+
   if (loading) {
     return (
       <div className="loading-container">
@@ -59,13 +113,7 @@ export default function ServiceDetailPage() {
 
   const icon = CATEGORY_ICONS[service.category] || '🔨'
   const color = CATEGORY_COLORS[service.category] || '#7C3AED'
-  
-  // Sample images - replace with actual images from your API
-  const images = [
-    service.imageUrl || `https://placehold.co/600x400/${color.slice(1)}/white?text=${service.name}`,
-    `https://placehold.co/600x400/${color.slice(1)}/white?text=Service+Process`,
-    `https://placehold.co/600x400/${color.slice(1)}/white?text=Quality+Work`
-  ]
+  const images = getServiceImages(service)
 
   const features = [
     'Professional & Certified Experts',
@@ -73,7 +121,9 @@ export default function ServiceDetailPage() {
     'On-Time Service Delivery',
     '100% Customer Satisfaction',
     'Affordable Pricing',
-    'Safety Measures Followed'
+    'Safety Measures Followed',
+    'Free Consultation',
+    'Emergency Support Available'
   ]
 
   return (
@@ -95,6 +145,13 @@ export default function ServiceDetailPage() {
               <img src={images[selectedImage]} alt={service.name} />
               <div className="category-badge" style={{ background: color }}>
                 {icon} {service.category}
+              </div>
+              <div className="image-overlay">
+                <button className="zoom-btn">
+                  <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                  </svg>
+                </button>
               </div>
             </div>
             <div className="thumbnail-grid">
@@ -125,6 +182,7 @@ export default function ServiceDetailPage() {
                 </div>
                 <span className="rating-value">{service.rating || 4.8}</span>
                 <span className="review-count">({service.reviewCount || 128} reviews)</span>
+                <span className="rating-badge">Excellent</span>
               </div>
 
               <div className="meta-info">
@@ -140,6 +198,12 @@ export default function ServiceDetailPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
                   <span>Service at your location</span>
+                </div>
+                <div className="meta-item">
+                  <svg className="meta-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                  <span>Insured & Verified</span>
                 </div>
               </div>
             </div>
@@ -266,6 +330,43 @@ export default function ServiceDetailPage() {
           transform: scale(1.05);
         }
 
+        .image-overlay {
+          position: absolute;
+          bottom: 1rem;
+          right: 1rem;
+          opacity: 0;
+          transition: opacity 0.3s ease;
+        }
+
+        .main-image:hover .image-overlay {
+          opacity: 1;
+        }
+
+        .zoom-btn {
+          background: rgba(0, 0, 0, 0.7);
+          backdrop-filter: blur(4px);
+          border: none;
+          width: 2.5rem;
+          height: 2.5rem;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
+
+        .zoom-btn svg {
+          width: 1.25rem;
+          height: 1.25rem;
+          color: white;
+        }
+
+        .zoom-btn:hover {
+          background: #667eea;
+          transform: scale(1.05);
+        }
+
         .category-badge {
           position: absolute;
           top: 1rem;
@@ -281,7 +382,7 @@ export default function ServiceDetailPage() {
 
         .thumbnail-grid {
           display: grid;
-          grid-template-columns: repeat(3, 1fr);
+          grid-template-columns: repeat(4, 1fr);
           gap: 0.75rem;
         }
 
@@ -295,7 +396,7 @@ export default function ServiceDetailPage() {
 
         .thumbnail img {
           width: 100%;
-          height: 100px;
+          height: 80px;
           object-fit: cover;
         }
 
@@ -334,6 +435,7 @@ export default function ServiceDetailPage() {
           align-items: center;
           gap: 0.5rem;
           margin-bottom: 1rem;
+          flex-wrap: wrap;
         }
 
         .stars {
@@ -360,6 +462,15 @@ export default function ServiceDetailPage() {
         .review-count {
           color: #64748b;
           font-size: 0.875rem;
+        }
+
+        .rating-badge {
+          background: #d1fae5;
+          color: #059669;
+          padding: 0.25rem 0.5rem;
+          border-radius: 1rem;
+          font-size: 0.75rem;
+          font-weight: 600;
         }
 
         .meta-info {
@@ -414,6 +525,14 @@ export default function ServiceDetailPage() {
           gap: 0.75rem;
           font-size: 0.875rem;
           color: #475569;
+          padding: 0.5rem;
+          border-radius: 0.75rem;
+          transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+          background: #f8fafc;
+          transform: translateX(4px);
         }
 
         .feature-check {
@@ -433,6 +552,18 @@ export default function ServiceDetailPage() {
           gap: 1rem;
           flex-wrap: wrap;
           box-shadow: 0 20px 35px -8px rgba(102, 126, 234, 0.3);
+          animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
 
         .price-section {
@@ -550,6 +681,14 @@ export default function ServiceDetailPage() {
           .book-now-btn {
             width: 100%;
             justify-content: center;
+          }
+
+          .thumbnail-grid {
+            grid-template-columns: repeat(4, 1fr);
+          }
+
+          .thumbnail img {
+            height: 60px;
           }
         }
       `}</style>
