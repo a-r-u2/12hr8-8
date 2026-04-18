@@ -1,7 +1,7 @@
 const express  = require('express');
 const mongoose = require('mongoose');
 const cors     = require('cors');
-const path     = require('path'); // Add this for serving static files
+const path     = require('path');
 require('dotenv').config();
 
 const app = express();
@@ -17,7 +17,7 @@ app.use('/api/slots',    require('./routes/slots'));
 app.use('/api/payment',  require('./routes/payment'));
 app.use('/api/admin',    require('./routes/admin'));
 
-// ===== ADD THIS - Root API endpoint =====
+// Root API endpoint
 app.get('/api', (req, res) => {
   res.json({
     message: 'Service Booking API is running',
@@ -34,7 +34,7 @@ app.get('/api', (req, res) => {
   });
 });
 
-// ===== ADD THIS - Handle root route =====
+// Root route
 app.get('/', (req, res) => {
   res.json({
     message: 'Welcome to Service Booking API',
@@ -43,35 +43,46 @@ app.get('/', (req, res) => {
   });
 });
 
-// ===== ADD THIS - For production deployment (serving React frontend) =====
-// Check if we're in production and frontend build exists
+// ===== FIXED: Handle 404 for unknown routes (no wildcard *) =====
+// For production - serve React frontend
 if (process.env.NODE_ENV === 'production') {
   // Serve static files from the React frontend
   app.use(express.static(path.join(__dirname, '../frontend/dist')));
   
-  // Handle any requests that don't match API routes
-  app.get('*', (req, res) => {
+  // Handle React routing - send to index.html for any non-API route
+  app.use((req, res, next) => {
+    if (req.path.startsWith('/api')) {
+      return next();
+    }
     res.sendFile(path.join(__dirname, '../frontend/dist', 'index.html'));
   });
 } else {
-  // Development - handle 404 for unknown routes
-  app.get('*', (req, res) => {
+  // Development - handle 404 for unknown API routes
+  // app.use('/api/*', (req, res) => {
+  //   res.status(404).json({
+  //     error: 'API endpoint not found',
+  //     message: 'Please check your API endpoint URL',
+  //     availableEndpoints: [
+  //       '/api/auth',
+  //       '/api/services',
+  //       '/api/bookings',
+  //       '/api/slots',
+  //       '/api/payment',
+  //       '/api/admin'
+  //     ]
+  //   });
+  // });
+  
+  // Handle non-API routes in development
+  app.use((req, res) => {
     res.status(404).json({
       error: 'Route not found',
-      message: 'This is an API server. Please use /api endpoints.',
-      availableEndpoints: [
-        '/api/auth',
-        '/api/services',
-        '/api/bookings',
-        '/api/slots',
-        '/api/payment',
-        '/api/admin'
-      ]
+      message: 'This is an API server. Please use /api endpoints.'
     });
   });
 }
 
-// Error handling middleware (optional but recommended)
+// Error handling middleware
 app.use((err, req, res, next) => {
   console.error('Error:', err.message);
   res.status(500).json({ 
