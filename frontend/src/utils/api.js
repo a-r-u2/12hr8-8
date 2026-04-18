@@ -1,11 +1,8 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL
-    ? `${import.meta.env.VITE_API_URL}/api`
-    : '/api',
-  headers: { 'Content-Type': 'application/json' }
-})
+  baseURL: "https://servnow-s9a0.onrender.com/api"
+});
 
 api.interceptors.request.use((config) => {
   const user = JSON.parse(localStorage.getItem('user') || 'null')
