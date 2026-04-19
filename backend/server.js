@@ -16,6 +16,15 @@ app.use('/api/slots',    require('./routes/slots'));
 app.use('/api/payment',  require('./routes/payment'));
 app.use('/api/admin',    require('./routes/admin'));
 
+// Root route for health check and render deployment
+app.get('/', (req, res) => {
+  res.status(200).send('ServeNow backend is running')
+});
+
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok', service: 'ServeNow backend' })
+});
+
 // Seed default services on first run
 async function seedServices() {
   const Service = require('./models/Service');
