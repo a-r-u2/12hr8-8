@@ -8,6 +8,8 @@ import ConfirmationPage  from './pages/ConfirmationPage'
 import MyBookingsPage    from './pages/MyBookingsPage'
 import LoginPage         from './pages/LoginPage'
 import AdminPage         from './pages/AdminPage'
+import CheckoutPage from './pages/CheckoutPage'
+
 
 export default function App() {
   return (
@@ -18,7 +20,8 @@ export default function App() {
         <Route path="/services"          element={<ServicesPage />} />
         <Route path="/services/:id"      element={<ServiceDetailPage />} />
         <Route path="/book/:id"          element={<BookingPage />} />
-        <Route path="/confirmation/:id"  element={<ConfirmationPage />} />
+        <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/confirmation"  element={<ConfirmationPage />} />
         <Route path="/bookings"          element={<MyBookingsPage />} />
         <Route path="/login"             element={<LoginPage />} />
         <Route path="/admin"             element={<AdminPage />} />
